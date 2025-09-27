@@ -58,7 +58,7 @@ class InvoiceGenerator {
         }
 
         // Download PDF button
-        const downloadBtn = document.getElementById('downloadPDF');
+        const downloadBtn = document.getElementById('downloadPDF') as HTMLButtonElement;
         if (downloadBtn) {
             downloadBtn.addEventListener('click', () => this.downloadPDF());
         }
@@ -249,7 +249,7 @@ class InvoiceGenerator {
 
         const previewSection = document.getElementById('previewSection');
         const previewContainer = document.getElementById('invoicePreview');
-        const downloadBtn = document.getElementById('downloadPDF');
+        const downloadBtn = document.getElementById('downloadPDF') as HTMLButtonElement;
 
         if (!previewSection || !previewContainer) return;
 
