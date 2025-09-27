@@ -1,56 +1,15 @@
-// Invoice Generator TypeScript Implementation
-// Modular invoice generation with clean separation of concerns
+// Invoice Generator JavaScript Implementation
+// Clean vanilla JS version for browser compatibility
 
-// Interface definitions for type safety
-interface CompanyInfo {
-    name: string;
-    email: string;
-    phone: string;
-    website: string;
-    address: string;
-}
-
-interface ClientInfo {
-    name: string;
-    email: string;
-    address: string;
-}
-
-interface InvoiceMeta {
-    number: string;
-    date: string;
-    dueDate: string;
-    taxRate: number;
-}
-
-interface LineItem {
-    description: string;
-    quantity: number;
-    price: number;
-    total: number;
-}
-
-interface InvoiceData {
-    company: CompanyInfo;
-    client: ClientInfo;
-    meta: InvoiceMeta;
-    items: LineItem[];
-    subtotal: number;
-    taxAmount: number;
-    grandTotal: number;
-}
-
-// Main Invoice Generator Class
 class InvoiceGenerator {
-    private currentItemIndex: number = 0;
-
     constructor() {
+        this.currentItemIndex = 0;
         this.initializeEventListeners();
         this.setDefaultDate();
     }
 
     // Initialize all event listeners for form interactions
-    private initializeEventListeners(): void {
+    initializeEventListeners() {
         // Generate preview button
         const generateBtn = document.getElementById('generatePreview');
         if (generateBtn) {
@@ -58,7 +17,7 @@ class InvoiceGenerator {
         }
 
         // Download PDF button
-        const downloadBtn = document.getElementById('downloadPDF') as HTMLButtonElement;
+        const downloadBtn = document.getElementById('downloadPDF');
         if (downloadBtn) {
             downloadBtn.addEventListener('click', () => this.downloadPDF());
         }
@@ -74,22 +33,22 @@ class InvoiceGenerator {
     }
 
     // Set default invoice date to today
-    private setDefaultDate(): void {
+    setDefaultDate() {
         const today = new Date().toISOString().split('T')[0];
-        const dateInput = document.getElementById('invoiceDate') as HTMLInputElement;
+        const dateInput = document.getElementById('invoiceDate');
         if (dateInput && !dateInput.value) {
             dateInput.value = today;
         }
     }
 
     // Setup automatic calculations for line items
-    private setupLineItemCalculations(): void {
+    setupLineItemCalculations() {
         const container = document.querySelector('.line-items-container');
         if (!container) return;
 
         // Use event delegation for dynamic line items
         container.addEventListener('input', (e) => {
-            const target = e.target as HTMLInputElement;
+            const target = e.target;
             if (target.classList.contains('item-quantity') || target.classList.contains('item-price')) {
                 this.calculateLineItemTotal(target);
             }
@@ -97,13 +56,13 @@ class InvoiceGenerator {
     }
 
     // Calculate total for a specific line item
-    private calculateLineItemTotal(input: HTMLInputElement): void {
-        const lineItem = input.closest('.line-item') as HTMLElement;
+    calculateLineItemTotal(input) {
+        const lineItem = input.closest('.line-item');
         if (!lineItem) return;
 
-        const quantityInput = lineItem.querySelector('.item-quantity') as HTMLInputElement;
-        const priceInput = lineItem.querySelector('.item-price') as HTMLInputElement;
-        const totalInput = lineItem.querySelector('.item-total') as HTMLInputElement;
+        const quantityInput = lineItem.querySelector('.item-quantity');
+        const priceInput = lineItem.querySelector('.item-price');
+        const totalInput = lineItem.querySelector('.item-total');
 
         if (!quantityInput || !priceInput || !totalInput) return;
 
@@ -115,7 +74,7 @@ class InvoiceGenerator {
     }
 
     // Add a new line item to the form
-    private addLineItem(): void {
+    addLineItem() {
         this.currentItemIndex++;
         const container = document.querySelector('.line-items-container');
         if (!container) return;
@@ -149,10 +108,10 @@ class InvoiceGenerator {
     }
 
     // Collect form data and validate inputs
-    private collectFormData(): InvoiceData | null {
+    collectFormData() {
         try {
             // Collect company information
-            const company: CompanyInfo = {
+            const company = {
                 name: this.getInputValue('companyName'),
                 email: this.getInputValue('companyEmail'),
                 phone: this.getInputValue('companyPhone'),
@@ -161,14 +120,14 @@ class InvoiceGenerator {
             };
 
             // Collect client information
-            const client: ClientInfo = {
+            const client = {
                 name: this.getInputValue('clientName'),
                 email: this.getInputValue('clientEmail'),
                 address: this.getInputValue('clientAddress')
             };
 
             // Collect invoice metadata
-            const meta: InvoiceMeta = {
+            const meta = {
                 number: this.getInputValue('invoiceNumber'),
                 date: this.getInputValue('invoiceDate'),
                 dueDate: this.getInputValue('dueDate'),
@@ -212,21 +171,21 @@ class InvoiceGenerator {
     }
 
     // Helper method to get input values safely
-    private getInputValue(id: string): string {
-        const element = document.getElementById(id) as HTMLInputElement | HTMLTextAreaElement;
+    getInputValue(id) {
+        const element = document.getElementById(id);
         return element ? element.value.trim() : '';
     }
 
     // Collect all line items from the form
-    private collectLineItems(): LineItem[] {
-        const items: LineItem[] = [];
+    collectLineItems() {
+        const items = [];
         const lineItems = document.querySelectorAll('.line-item');
 
         lineItems.forEach((item) => {
-            const description = (item.querySelector('.item-description') as HTMLInputElement)?.value.trim();
-            const quantity = parseFloat((item.querySelector('.item-quantity') as HTMLInputElement)?.value || '0');
-            const price = parseFloat((item.querySelector('.item-price') as HTMLInputElement)?.value || '0');
-            const total = parseFloat((item.querySelector('.item-total') as HTMLInputElement)?.value || '0');
+            const description = item.querySelector('.item-description')?.value.trim();
+            const quantity = parseFloat(item.querySelector('.item-quantity')?.value || '0');
+            const price = parseFloat(item.querySelector('.item-price')?.value || '0');
+            const total = parseFloat(item.querySelector('.item-total')?.value || '0');
 
             // Only add items with description
             if (description) {
@@ -243,13 +202,13 @@ class InvoiceGenerator {
     }
 
     // Generate and display the invoice preview
-    public generatePreview(): void {
+    generatePreview() {
         const invoiceData = this.collectFormData();
         if (!invoiceData) return;
 
         const previewSection = document.getElementById('previewSection');
         const previewContainer = document.getElementById('invoicePreview');
-        const downloadBtn = document.getElementById('downloadPDF') as HTMLButtonElement;
+        const downloadBtn = document.getElementById('downloadPDF');
 
         if (!previewSection || !previewContainer) return;
 
@@ -268,7 +227,7 @@ class InvoiceGenerator {
     }
 
     // Generate HTML structure for the invoice
-    private generateInvoiceHTML(data: InvoiceData): string {
+    generateInvoiceHTML(data) {
         return `
             <div class="invoice-header">
                 <div class="company-info">
@@ -340,14 +299,14 @@ class InvoiceGenerator {
     }
 
     // Escape HTML to prevent XSS attacks
-    private escapeHtml(text: string): string {
+    escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
     }
 
     // Format date for display
-    private formatDate(dateString: string): string {
+    formatDate(dateString) {
         const date = new Date(dateString);
         return date.toLocaleDateString('en-US', {
             year: 'numeric',
@@ -357,7 +316,7 @@ class InvoiceGenerator {
     }
 
     // Download invoice as PDF using browser's print functionality
-    public downloadPDF(): void {
+    downloadPDF() {
         const previewSection = document.getElementById('previewSection');
         if (!previewSection || previewSection.style.display === 'none') {
             alert('Please generate a preview first');
