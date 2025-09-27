@@ -32,9 +32,8 @@ class InvoiceGenerator {
     setDefaultDate() {
         const today = new Date().toISOString().split('T')[0];
         const dateInput = document.getElementById('invoiceDate');
-        if (dateInput) {
-            if (!dateInput.value || dateInput.value === '')
-                dateInput.value = today;
+        if (dateInput && !dateInput.value) {
+            dateInput.value = today;
         }
     }
     // Setup automatic calculations for line items
@@ -292,9 +291,9 @@ class InvoiceGenerator {
             return;
         }
         // Create a new window for printing
-        const printWindow = window.open('', '_blank');
-        if (!printWindow) {
-            alert('Please allow popups to download the PDF');
+        const printWindow = window.open('', '_blank', 'width=800,height=600');
+        if (!printWindow || printWindow.closed) {
+            alert('Please allow popups to download the PDF. You can also use Ctrl+P (Cmd+P on Mac) to print the current page.');
             return;
         }
         // Get the invoice HTML
@@ -427,10 +426,13 @@ class InvoiceGenerator {
         `);
         printWindow.document.close();
         // Wait for content to load, then print
-        printWindow.onload = () => {
+        setTimeout(() => {
             printWindow.print();
-            printWindow.close();
-        };
+            // Don't close immediately to allow user to interact with print dialog
+            setTimeout(() => {
+                printWindow.close();
+            }, 1000);
+        }, 500);
     }
 }
 // Initialize the invoice generator when the DOM is loaded

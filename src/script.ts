@@ -77,8 +77,8 @@ class InvoiceGenerator {
     private setDefaultDate(): void {
         const today = new Date().toISOString().split('T')[0];
         const dateInput = document.getElementById('invoiceDate') as HTMLInputElement;
-        if (dateInput) {
-            if (!dateInput.value || dateInput.value === '') (dateInput as any).value = today;
+        if (dateInput && !dateInput.value) {
+            (dateInput as any).value = today;
         }
     }
 
@@ -365,9 +365,9 @@ class InvoiceGenerator {
         }
 
         // Create a new window for printing
-        const printWindow = window.open('', '_blank');
-        if (!printWindow) {
-            alert('Please allow popups to download the PDF');
+        const printWindow = window.open('', '_blank', 'width=800,height=600');
+        if (!printWindow || printWindow.closed) {
+            alert('Please allow popups to download the PDF. You can also use Ctrl+P (Cmd+P on Mac) to print the current page.');
             return;
         }
 
@@ -503,10 +503,13 @@ class InvoiceGenerator {
         printWindow.document.close();
 
         // Wait for content to load, then print
-        printWindow.onload = () => {
+        setTimeout(() => {
             printWindow.print();
-            printWindow.close();
-        };
+            // Don't close immediately to allow user to interact with print dialog
+            setTimeout(() => {
+                printWindow.close();
+            }, 1000);
+        }, 500);
     }
 }
 
