@@ -1,0 +1,26 @@
+{
+  "name": "invoice.generator.ts",
+  "version": "1.0.0",
+  "main": "dist/script.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "dev": "tsc --watch & python3 -m http.server 8080",
+    "start": "python3 -m http.server 8080"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stoiccapital/invoice.git"
+  },
+  "keywords": ["invoice", "generator", "typescript", "vanilla"],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stoiccapital/invoice/issues"
+  },
+  "homepage": "https://github.com/stoiccapital/invoice#readme",
+  "description": "A clean, vanilla TypeScript invoice generator with PDF export",
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

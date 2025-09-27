@@ -1,13 +1,13 @@
-// Invoice Generator JavaScript Implementation
-// Clean vanilla JS version for browser compatibility
-
+"use strict";
+// Invoice Generator TypeScript Implementation
+// Modular invoice generation with clean separation of concerns
+// Main Invoice Generator Class
 class InvoiceGenerator {
     constructor() {
         this.currentItemIndex = 0;
         this.initializeEventListeners();
         this.setDefaultDate();
     }
-
     // Initialize all event listeners for form interactions
     initializeEventListeners() {
         // Generate preview button
@@ -15,37 +15,33 @@ class InvoiceGenerator {
         if (generateBtn) {
             generateBtn.addEventListener('click', () => this.generatePreview());
         }
-
         // Download PDF button
         const downloadBtn = document.getElementById('downloadPDF');
         if (downloadBtn) {
             downloadBtn.addEventListener('click', () => this.downloadPDF());
         }
-
         // Add item button
         const addItemBtn = document.getElementById('addItem');
         if (addItemBtn) {
             addItemBtn.addEventListener('click', () => this.addLineItem());
         }
-
         // Auto-calculate line item totals when inputs change
         this.setupLineItemCalculations();
     }
-
     // Set default invoice date to today
     setDefaultDate() {
         const today = new Date().toISOString().split('T')[0];
         const dateInput = document.getElementById('invoiceDate');
-        if (dateInput && !dateInput.value) {
-            dateInput.value = today;
+        if (dateInput) {
+            if (!dateInput.value || dateInput.value === '')
+                dateInput.value = today;
         }
     }
-
     // Setup automatic calculations for line items
     setupLineItemCalculations() {
         const container = document.querySelector('.line-items-container');
-        if (!container) return;
-
+        if (!container)
+            return;
         // Use event delegation for dynamic line items
         container.addEventListener('input', (e) => {
             const target = e.target;
@@ -54,35 +50,30 @@ class InvoiceGenerator {
             }
         });
     }
-
     // Calculate total for a specific line item
     calculateLineItemTotal(input) {
         const lineItem = input.closest('.line-item');
-        if (!lineItem) return;
-
+        if (!lineItem)
+            return;
         const quantityInput = lineItem.querySelector('.item-quantity');
         const priceInput = lineItem.querySelector('.item-price');
         const totalInput = lineItem.querySelector('.item-total');
-
-        if (!quantityInput || !priceInput || !totalInput) return;
-
+        if (!quantityInput || !priceInput || !totalInput)
+            return;
         const quantity = parseFloat(quantityInput.value) || 0;
         const price = parseFloat(priceInput.value) || 0;
         const total = quantity * price;
-
         totalInput.value = total.toFixed(2);
     }
-
     // Add a new line item to the form
     addLineItem() {
         this.currentItemIndex++;
         const container = document.querySelector('.line-items-container');
-        if (!container) return;
-
+        if (!container)
+            return;
         const newItem = document.createElement('div');
         newItem.className = 'line-item';
         newItem.setAttribute('data-item', this.currentItemIndex.toString());
-
         newItem.innerHTML = `
             <div class="form-row">
                 <div class="form-field">
@@ -103,10 +94,8 @@ class InvoiceGenerator {
                 </div>
             </div>
         `;
-
         container.appendChild(newItem);
     }
-
     // Collect form data and validate inputs
     collectFormData() {
         try {
@@ -118,14 +107,12 @@ class InvoiceGenerator {
                 website: this.getInputValue('companyWebsite'),
                 address: this.getInputValue('companyAddress')
             };
-
             // Collect client information
             const client = {
                 name: this.getInputValue('clientName'),
                 email: this.getInputValue('clientEmail'),
                 address: this.getInputValue('clientAddress')
             };
-
             // Collect invoice metadata
             const meta = {
                 number: this.getInputValue('invoiceNumber'),
@@ -133,26 +120,21 @@ class InvoiceGenerator {
                 dueDate: this.getInputValue('dueDate'),
                 taxRate: parseFloat(this.getInputValue('taxRate')) || 0
             };
-
             // Collect line items
             const items = this.collectLineItems();
-
             // Validate required fields
             if (!company.name || !client.name || !meta.number || !meta.date) {
                 alert('Please fill in all required fields (marked with *)');
                 return null;
             }
-
             if (items.length === 0) {
                 alert('Please add at least one invoice item');
                 return null;
             }
-
             // Calculate totals
             const subtotal = items.reduce((sum, item) => sum + item.total, 0);
             const taxAmount = (subtotal * meta.taxRate) / 100;
             const grandTotal = subtotal + taxAmount;
-
             return {
                 company,
                 client,
@@ -162,31 +144,27 @@ class InvoiceGenerator {
                 taxAmount,
                 grandTotal
             };
-
-        } catch (error) {
+        }
+        catch (error) {
             console.error('Error collecting form data:', error);
             alert('Error processing form data. Please check your inputs.');
             return null;
         }
     }
-
     // Helper method to get input values safely
     getInputValue(id) {
         const element = document.getElementById(id);
         return element ? element.value.trim() : '';
     }
-
     // Collect all line items from the form
     collectLineItems() {
         const items = [];
         const lineItems = document.querySelectorAll('.line-item');
-
         lineItems.forEach((item) => {
             const description = item.querySelector('.item-description')?.value.trim();
             const quantity = parseFloat(item.querySelector('.item-quantity')?.value || '0');
             const price = parseFloat(item.querySelector('.item-price')?.value || '0');
             const total = parseFloat(item.querySelector('.item-total')?.value || '0');
-
             // Only add items with description
             if (description) {
                 items.push({
@@ -197,35 +175,29 @@ class InvoiceGenerator {
                 });
             }
         });
-
         return items;
     }
-
     // Generate and display the invoice preview
     generatePreview() {
         const invoiceData = this.collectFormData();
-        if (!invoiceData) return;
-
+        if (!invoiceData)
+            return;
         const previewSection = document.getElementById('previewSection');
         const previewContainer = document.getElementById('invoicePreview');
         const downloadBtn = document.getElementById('downloadPDF');
-
-        if (!previewSection || !previewContainer) return;
-
+        if (!previewSection || !previewContainer)
+            return;
         // Generate HTML for the invoice
         const invoiceHTML = this.generateInvoiceHTML(invoiceData);
         previewContainer.innerHTML = invoiceHTML;
-
         // Show preview section and enable download button
         previewSection.style.display = 'block';
         if (downloadBtn) {
             downloadBtn.disabled = false;
         }
-
         // Scroll to preview
         previewSection.scrollIntoView({ behavior: 'smooth' });
     }
-
     // Generate HTML structure for the invoice
     generateInvoiceHTML(data) {
         return `
@@ -297,14 +269,12 @@ class InvoiceGenerator {
             </div>
         `;
     }
-
     // Escape HTML to prevent XSS attacks
     escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
     }
-
     // Format date for display
     formatDate(dateString) {
         const date = new Date(dateString);
@@ -314,7 +284,6 @@ class InvoiceGenerator {
             day: 'numeric'
         });
     }
-
     // Download invoice as PDF using browser's print functionality
     downloadPDF() {
         const previewSection = document.getElementById('previewSection');
@@ -322,18 +291,16 @@ class InvoiceGenerator {
             alert('Please generate a preview first');
             return;
         }
-
         // Create a new window for printing
         const printWindow = window.open('', '_blank');
         if (!printWindow) {
             alert('Please allow popups to download the PDF');
             return;
         }
-
         // Get the invoice HTML
         const invoiceHTML = document.getElementById('invoicePreview')?.innerHTML;
-        if (!invoiceHTML) return;
-
+        if (!invoiceHTML)
+            return;
         // Create the print document
         printWindow.document.write(`
             <!DOCTYPE html>
@@ -458,9 +425,7 @@ class InvoiceGenerator {
             </body>
             </html>
         `);
-
         printWindow.document.close();
-
         // Wait for content to load, then print
         printWindow.onload = () => {
             printWindow.print();
@@ -468,8 +433,8 @@ class InvoiceGenerator {
         };
     }
 }
-
 // Initialize the invoice generator when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     new InvoiceGenerator();
 });
+//# sourceMappingURL=script.js.map
