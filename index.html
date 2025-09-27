@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Invoice Generator</h1>
+            <p>Create professional invoices quickly and easily</p>
+        </header>
+
+        <!-- Invoice Form Section -->
+        <section class="form-section">
+            <h2>Invoice Details</h2>
+            
+            <!-- Company Information -->
+            <div class="form-group">
+                <h3>Your Company Information</h3>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="companyName">Company Name *</label>
+                        <input type="text" id="companyName" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="companyEmail">Email</label>
+                        <input type="email" id="companyEmail">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="companyPhone">Phone</label>
+                        <input type="tel" id="companyPhone">
+                    </div>
+                    <div class="form-field">
+                        <label for="companyWebsite">Website</label>
+                        <input type="url" id="companyWebsite">
+                    </div>
+                </div>
+                <div class="form-field">
+                    <label for="companyAddress">Address</label>
+                    <textarea id="companyAddress" rows="3"></textarea>
+                </div>
+            </div>
+
+            <!-- Client Information -->
+            <div class="form-group">
+                <h3>Client Information</h3>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="clientName">Client Name *</label>
+                        <input type="text" id="clientName" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="clientEmail">Client Email</label>
+                        <input type="email" id="clientEmail">
+                    </div>
+                </div>
+                <div class="form-field">
+                    <label for="clientAddress">Client Address</label>
+                    <textarea id="clientAddress" rows="3"></textarea>
+                </div>
+            </div>
+
+            <!-- Invoice Meta Information -->
+            <div class="form-group">
+                <h3>Invoice Information</h3>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="invoiceNumber">Invoice Number *</label>
+                        <input type="text" id="invoiceNumber" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="invoiceDate">Invoice Date *</label>
+                        <input type="date" id="invoiceDate" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="dueDate">Due Date</label>
+                        <input type="date" id="dueDate">
+                    </div>
+                    <div class="form-field">
+                        <label for="taxRate">Tax Rate (%)</label>
+                        <input type="number" id="taxRate" min="0" max="100" step="0.01" value="0">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Line Items -->
+            <div class="form-group">
+                <h3>Invoice Items</h3>
+                <div class="line-items-container">
+                    <div class="line-item" data-item="0">
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>Description *</label>
+                                <input type="text" class="item-description" required>
+                            </div>
+                            <div class="form-field">
+                                <label>Quantity *</label>
+                                <input type="number" class="item-quantity" min="0" step="0.01" value="1" required>
+                            </div>
+                            <div class="form-field">
+                                <label>Unit Price *</label>
+                                <input type="number" class="item-price" min="0" step="0.01" required>
+                            </div>
+                            <div class="form-field">
+                                <label>Total</label>
+                                <input type="number" class="item-total" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" id="addItem" class="btn-secondary">+ Add Item</button>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="form-actions">
+                <button type="button" id="generatePreview" class="btn-primary">Generate Preview</button>
+                <button type="button" id="downloadPDF" class="btn-secondary" disabled>Download PDF</button>
+            </div>
+        </section>
+
+        <!-- Invoice Preview Section -->
+        <section class="preview-section" id="previewSection" style="display: none;">
+            <h2>Invoice Preview</h2>
+            <div class="invoice-preview" id="invoicePreview">
+                <!-- Invoice content will be generated here -->
+            </div>
+        </section>
+    </div>
+
+    <script src="script.ts"></script>
+</body>
+</html>
